@@ -52,6 +52,9 @@ function initialprompts() {
       case "VIEW_ALL_DEPTS":
         viewDeps();
         break;
+      case "ADD_DEPT":
+        addDepartment();
+        break;
     }
   });
 }
@@ -75,10 +78,43 @@ function viewRoles() {
 }
 
 function viewDeps() {
-  const query = "SELECT * FROM role";
+  const query = "SELECT * FROM department";
   db.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
     initialprompts();
+  });
+}
+
+function addDepartment() {
+  prompt([
+    {
+      name: "name",
+      message: "What is the name of the department?",
+    },
+  ]).then((res) => {
+    let departmentName = res.name;
+    createDepartment(departmentName)
+      .then(() => {
+        console.log(`Added ${departmentName} to the database`);
+        initialprompts();
+      })
+      .catch((err) => {
+        console.error("Error adding department:", err);
+        initialprompts();
+      });
+  });
+}
+
+function createDepartment(departmentName) {
+  return new Promise((resolve, reject) => {
+    const query = "INSERT INTO department (name) VALUES (?)";
+    db.query(query, [departmentName], (err, results) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(results);
+      }
+    });
   });
 }
