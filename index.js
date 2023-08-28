@@ -46,12 +46,36 @@ function initialprompts() {
       case "VIEW_EMPLOYEES":
         viewEmployees();
         break;
+      case "VIEW_ROLES":
+        viewRoles();
+        break;
+      case "VIEW_ALL_DEPTS":
+        viewDeps();
+        break;
     }
   });
 }
 
 function viewEmployees() {
   const query = "SELECT * FROM employee";
+  db.query(query, (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    initialprompts();
+  });
+}
+
+function viewRoles() {
+  const query = "SELECT * FROM role";
+  db.query(query, (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    initialprompts();
+  });
+}
+
+function viewDeps() {
+  const query = "SELECT * FROM role";
   db.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
