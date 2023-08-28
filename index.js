@@ -1,5 +1,5 @@
 const { prompt } = require("inquirer");
-const db = require("./db");
+const db = require("./db/connection");
 
 initialprompts();
 
@@ -43,7 +43,7 @@ function initialprompts() {
   ]).then((res) => {
     let choice = res.initiallist;
     switch (choice) {
-      case "VIEW EMPLOYEES":
+      case "VIEW_EMPLOYEES":
         viewEmployees();
         break;
     }
@@ -51,8 +51,8 @@ function initialprompts() {
 }
 
 function viewEmployees() {
-  const query = "SELECT * FROM employees";
-  connection.query(query, (err, res) => {
+  const query = "SELECT * FROM employee";
+  db.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
     initialprompts();
