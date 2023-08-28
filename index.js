@@ -58,6 +58,12 @@ function initialprompts() {
       case "ADD_ROLE":
         addRole();
         break;
+      case "ADD_EMPLOYEE":
+        addEmployee();
+        break;
+      case "UPDATE_EMPLOYEE_ROLE":
+        updateEmployeeRole();
+        break;
     }
   });
 }
@@ -150,6 +156,77 @@ function createRole(title, salary, department_id) {
       console.error("Error adding role:", err);
     } else {
       console.log(`Added role "${title}" to the database.`);
+      initialprompts();
+    }
+  });
+}
+
+function addEmployee() {
+  prompt([
+    {
+      name: "first_name",
+      message: "Enter the first name of the new employee:",
+    },
+    {
+      name: "last_name",
+      message: "Enter the last name of the new employee:",
+    },
+    {
+      name: "role_id",
+      message: "Enter the role ID for the new employee:",
+    },
+    {
+      name: "manager_id",
+      message: "Enter the manager ID for the new employee:",
+    },
+  ]).then((res) => {
+    const { first_name, last_name, role_id, manager_id } = res;
+    createEmployee(first_name, last_name, role_id, manager_id);
+  });
+}
+
+function createEmployee(first_name, last_name, role_id, manager_id) {
+  const query =
+    "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+  db.query(
+    query,
+    [first_name, last_name, role_id, manager_id],
+    (err, result) => {
+      if (err) {
+        console.error("Error adding employee:", err);
+      } else {
+        console.log(
+          `Added employee "${first_name} ${last_name}" to the database.`
+        );
+        initialprompts();
+      }
+    }
+  );
+}
+
+function updateEmployeeRole() {
+  prompt([
+    {
+      name: "employee_id",
+      message: "Enter the ID of the employee you want to update:",
+    },
+    {
+      name: "new_role_id",
+      message: "Enter the new role ID for the employee:",
+    },
+  ]).then((res) => {
+    const { employee_id, new_role_id } = res;
+    changeRole(employee_id, new_role_id);
+  });
+}
+
+function changeRole(employee_id, new_role_id) {
+  const query = "UPDATE employee SET role_id = ? WHERE id = ?";
+  db.query(query, [new_role_id, employee_id], (err, result) => {
+    if (err) {
+      console.error("Error updating employee role:", err);
+    } else {
+      console.log(`Updated role for employee with ID ${employee_id}.`);
       initialprompts();
     }
   });
