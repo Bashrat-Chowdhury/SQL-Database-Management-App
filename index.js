@@ -55,6 +55,9 @@ function initialprompts() {
       case "ADD_DEPT":
         addDepartment();
         break;
+      case "ADD_ROLE":
+        addRole();
+        break;
     }
   });
 }
@@ -116,5 +119,38 @@ function createDepartment(departmentName) {
         resolve(results);
       }
     });
+  });
+}
+
+function addRole() {
+  prompt([
+    {
+      name: "title",
+      message: "Enter the title of the new role:",
+    },
+    {
+      name: "salary",
+      message: "Enter the salary for the new role:",
+    },
+    {
+      name: "department_id",
+      message: "Enter the department ID for the new role:",
+    },
+  ]).then((res) => {
+    const { title, salary, department_id } = res;
+    createRole(title, salary, department_id);
+  });
+}
+
+function createRole(title, salary, department_id) {
+  const query =
+    "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
+  db.query(query, [title, salary, department_id], (err, result) => {
+    if (err) {
+      console.error("Error adding role:", err);
+    } else {
+      console.log(`Added role "${title}" to the database.`);
+      initialprompts();
+    }
   });
 }
