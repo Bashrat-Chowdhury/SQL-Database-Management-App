@@ -51,9 +51,10 @@ function initialprompts() {
 }
 
 function viewEmployees() {
-  db.findAllEmployees().then(([rows]) => {
-    let employees = rows;
-    console.log("\n");
-    console.table(employees);
+  const query = "SELECT * FROM employees";
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    initialprompts();
   });
 }
